@@ -7,37 +7,45 @@ import graph.*;
 public class SpanningTree {
 
     public static Collection<Edge> kruskal(UnionFind u, EuclideanGraph g){
-      Collection<Edge> rEdges = new LinkedList<Edge>();
-    	List<Edge> edges = g.getAllEdges();
-      Collections.sort(edges, new EdgeComparator());
-      for(Place p : g.places()) {
-        u.find(p);
-      }
-      for(Edge e : edges) {
-        if(u.find(e.source) != u.find(e.target)) {
-          rEdges.add(e);
-          u.union(e.source, e.target);
-        }
+	// Set of forest's edges.
+	Collection<Edge> rEdges = new LinkedList<Edge>();
+	// Get the set of edges of the graph g.
+	List<Edge> edges = g.getAllEdges();
+	// Sort the set of edge by using an EdgeComparator.
+	Collections.sort(edges, new EdgeComparator());
+	for(Edge e : edges) {
+		// Check if the source and the target of e are not already connected.
+		if(!(u.find(e.source).equals(u.find(e.target)))) {
+			// Add e to the set of forest's edges.
+			rEdges.add(e);
+			// Connect the source and the target of e.
+			u.union(e.source, e.target);
+		}
       }
     	return rEdges;
     }
 
-    public static Collection<Collection<Edge>> kruskal(EuclideanGraph g){
-    	HashMap<Place, Collection<Edge>> edgelist = new HashMap<Place, Collection<Edge>>();
-      UnionFind u = new UnionFind();
-      Collection<Edge> edges = kruskal(u, g);
-      for(Edge e : edges) {
-        Place v = u.find(e.source);
-        Place w = u.find(e.target);
-        assert(v.equals(w));
-        Collection<Edge> c = edgelist.get(v);
-        if(c == null) {
-          edgelist.put(v, new LinkedList<Edge>());
-        }
-        c = edgelist.get(v);
-        c.add(e);
-      }
-    	return edgelist.values();
+    public static Collection<Collection<Edge>> kruskal(EuclideanGraph g) {
+	// For every connected component, map its representative to its set of tree's edges. 
+	HashMap<Place, Collection<Edge>> edgelist = new HashMap<Place, Collection<Edge>>();
+	// Create an UnionFind instance.
+	UnionFind u = new UnionFind();
+	// Get the set of forest's edges.
+	Collection<Edge> edges = kruskal(u, g);
+	for(Edge e : edges) {
+		// Get the representative of the connected component that contain e.
+		Place v = u.find(e.source);
+		// Get the tree correspond to the representative v.
+		Collection<Edge> c = edgelist.get(v);
+		// Check if the tree was already added.
+		if(c == null) {
+			edgelist.put(v, new LinkedList<Edge>());
+		}
+	        c = edgelist.get(v);
+		// Add e to the tree.
+		c.add(e);
+	}
+	return edgelist.values();
     }
 
     public static Collection<Edge> primTree(HashSet<Place> nonVisited, Place start, EuclideanGraph g){
