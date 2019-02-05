@@ -37,7 +37,7 @@ public class SpanningTree {
 		Place v = u.find(e.source);
 		// Get the tree correspond to the representative v.
 		Collection<Edge> c = edgelist.get(v);
-		// Check if the tree was already added.
+		// Check if the tree was not  already added.
 		if(c == null) {
 			edgelist.put(v, new LinkedList<Edge>());
 		}
