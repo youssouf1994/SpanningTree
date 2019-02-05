@@ -48,22 +48,25 @@ public class SpanningTree {
 		return edgelist.values();
 	}
 
-	public static Collection<Edge> primTree(HashSet<Place> nonVisited, Place start, EuclideanGraph g){
+	public static Collection<Edge> primTree(HashSet<Place> nonVisited, Place start, EuclideanGraph g) {
+		// Set of tree's edges.
 		Collection<Edge> edges = new LinkedList<Edge>();
-		Queue<Edge> qEdges = new PriorityQueue<Edge>(g.getAllEdges().size(), new EdgeComparator());
+		// Queue on edges using an EdgeComparator.
+		Queue<Edge> qEdges = new PriorityQueue<Edge>(1, new EdgeComparator());
+		// Add all edges out from start to the queue.
 		for(Edge e : g.edgesOut(start)) {
 			qEdges.offer(e);
 		}
-
+		// Remove start from non visited set.
 		nonVisited.remove(start);
 
 		while(!qEdges.isEmpty()) {
-		Edge e = qEdges.poll();
-		Place v = e.target;
+			Edge e = qEdges.poll();
+			Place v = e.target;
 			if(nonVisited.contains(v)) {
 				edges.add(e);
 				for(Edge ee : g.edgesOut(v)) {
-				qEdges.offer(ee);
+					qEdges.offer(ee);
 				}
 				nonVisited.remove(v);
 			}
@@ -71,7 +74,7 @@ public class SpanningTree {
 		return edges;
 	}
 
-	public static Collection<Collection<Edge>> primForest(EuclideanGraph g){
+	public static Collection<Collection<Edge>> primForest(EuclideanGraph g) {
 		Collection<Collection<Edge>> edges = new LinkedList<Collection<Edge>>();
 		HashSet<Place> nonVisited = new HashSet<Place>();
 		for(Place p : g.places()) {
@@ -79,23 +82,8 @@ public class SpanningTree {
 		}
 		Queue<Edge> qEdges = new PriorityQueue<Edge>(g.getAllEdges().size(), new EdgeComparator());
 		while(!nonVisited.isEmpty()) {
-			Collection<Edge> tEdges = new LinkedList<Edge>();
 			Place start = nonVisited.iterator().next();
-			for(Edge e : g.edgesOut(start)) {
-				qEdges.offer(e);
-			}
-			nonVisited.remove(start);
-			while(!qEdges.isEmpty()) {
-				Edge e = qEdges.poll();
-				Place v = e.target;
-				if(nonVisited.contains(v)) {
-					tEdges.add(e);
-					for(Edge ee : g.edgesOut(v)) {
-						qEdges.offer(ee);
-					}
-					nonVisited.remove(v);
-				}
-			}
+			Collection<Edge> tEdges = primTree(nonVisited, start, g);
 			if(!tEdges.isEmpty())
 				edges.add(tEdges);
 		}
