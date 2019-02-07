@@ -59,21 +59,21 @@ public class SpanningTree {
 		}
 		// Remove start from non visited set.
 		nonVisited.remove(start);
-		// While there is an edge in the priority queue
+		// While there is an edge in the priority queue.
 		while(!qEdges.isEmpty()) {
-			// Let e be the lowest edges in the priority queue
+			// Let e be the lowest edges in the priority queue.
 			Edge e = qEdges.poll();
-			// Let v be the targuet of e
+			// Let v be the targuet of e.
 			Place v = e.target;
-			// Check if v is not already visited
+			// Check if v is not already visited.
 			if(nonVisited.contains(v)) {
-				// Add e to the tree
+				// Add e to the tree.
 				edges.add(e);
-				// Add all edges out from v to the priority queue
+				// Add all edges out from v to the priority queue.
 				for(Edge ee : g.edgesOut(v)) {
 					qEdges.offer(ee);
 				}
-				// Remove v from the non visited set
+				// Remove v from the non visited set.
 				nonVisited.remove(v);
 			}
 		}
@@ -83,21 +83,21 @@ public class SpanningTree {
 	public static Collection<Collection<Edge>> primForest(EuclideanGraph g) {
 		
 		Collection<Collection<Edge>> edges = new LinkedList<Collection<Edge>>();
-		// Create a set of all non visited vertices
+		// Create a set of all non visited vertices.
 		HashSet<Place> nonVisited = new HashSet<Place>();
-		// Add all vertices to the non visited set
+		// Add all vertices to the non visited set.
 		for(Place p : g.places()) {
 			nonVisited.add(p);
 		}
-		// While there is a non visited vertex
+		// While there is a non visited vertex.
 		while(!nonVisited.isEmpty()) {
-			// Let start be a non visired vertex
+			// Let start be a non visired vertex.
 			Place start = nonVisited.iterator().next();
-			// Get the tree of the connected component thet contains start
+			// Get the tree of the connected component thet contains start.
 			Collection<Edge> tEdges = primTree(nonVisited, start, g);
-			// Check if the tree contain at least one vertex
+			// Check if the tree contain at least one vertex.
 			if(!tEdges.isEmpty())
-				// Add the tree to the forest
+				// Add the tree to the forest.
 				edges.add(tEdges);
 		}
 		return edges;
