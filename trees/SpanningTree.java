@@ -33,7 +33,7 @@ public class SpanningTree {
 		// Get the set of forest's edges.
 		Collection<Edge> edges = kruskal(u, g);
 		for(Edge e : edges) {
-			// Get the representative of the connected component that contain e.
+			// Let v be the representative of the connected component that contains e.
 			Place v = u.find(e.source);
 			// Get the tree correspond to the representative v.
 			Collection<Edge> c = edgelist.get(v);
@@ -59,15 +59,21 @@ public class SpanningTree {
 		}
 		// Remove start from non visited set.
 		nonVisited.remove(start);
-
+		// While there is an edge in the priority queue
 		while(!qEdges.isEmpty()) {
+			// Let e be the lowest edges in the priority queue
 			Edge e = qEdges.poll();
+			// Let v be the targuet of e
 			Place v = e.target;
+			// Check if v is not already visited
 			if(nonVisited.contains(v)) {
+				// Add e to the tree
 				edges.add(e);
+				// Add all edges out from v to the priority queue
 				for(Edge ee : g.edgesOut(v)) {
 					qEdges.offer(ee);
 				}
+				// Remove v from the non visited set
 				nonVisited.remove(v);
 			}
 		}
@@ -75,16 +81,23 @@ public class SpanningTree {
 	}
 
 	public static Collection<Collection<Edge>> primForest(EuclideanGraph g) {
+		
 		Collection<Collection<Edge>> edges = new LinkedList<Collection<Edge>>();
+		// Create a set of all non visited vertices
 		HashSet<Place> nonVisited = new HashSet<Place>();
+		// Add all vertices to the non visited set
 		for(Place p : g.places()) {
 			nonVisited.add(p);
 		}
-		Queue<Edge> qEdges = new PriorityQueue<Edge>(g.getAllEdges().size(), new EdgeComparator());
+		// While there is a non visited vertex
 		while(!nonVisited.isEmpty()) {
+			// Let start be a non visired vertex
 			Place start = nonVisited.iterator().next();
+			// Get the tree of the connected component thet contains start
 			Collection<Edge> tEdges = primTree(nonVisited, start, g);
+			// Check if the tree contain at least one vertex
 			if(!tEdges.isEmpty())
+				// Add the tree to the forest
 				edges.add(tEdges);
 		}
 		return edges;
